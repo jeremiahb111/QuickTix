@@ -7,10 +7,12 @@ services:
       dockerfile: Dockerfile.dev
     container_name: tm_auth
     environment:
-      - PORT=${AUTH_PORT}
+      - AUTH_PORT=${AUTH_PORT}
       - NODE_ENV=${NODE_ENV}
       - MONGODB_URI=${MONGODB_URI}
       - JWT_SECRET=${JWT_SECRET}
+      - AUTH_DB_NAME=${DB_NAME}
+      - AUTH_SERVICE_NAME=${AUTH_SERVICE_NAME}
     develop:
       watch:
         - path: ./auth/package.json
@@ -26,10 +28,12 @@ services:
       dockerfile: Dockerfile.dev
     container_name: tm_tickets
     environment:
-      - PORT=${TICKET_PORT}
+      - TICKET_PORT=${TICKET_PORT}
       - NODE_ENV=${NODE_ENV}
       - MONGODB_URI=${MONGODB_URI}
       - JWT_SECRET=${JWT_SECRET}
+      - TICKET_DB_NAME=${DB_NAME}
+      - TICKET_SERVICE_NAME=${AUTH_SERVICE_NAME}
     develop:
       watch:
         - path: ./tickets/package.json
