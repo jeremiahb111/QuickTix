@@ -8,11 +8,13 @@ consoleStamp(console, {
 })
 
 const PORT = config.PORT
-const serviceName = config.SERVICE_NAME as string
-const dbName = config.DB_NAME as string
+const dbConfig = {
+  serviceName: config.SERVICE_NAME as string,
+  dbName: config.DB_NAME as string
+}
 
 const start = async () => {
-  await connectToDB(serviceName, dbName)
+  await connectToDB(dbConfig)
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
   })

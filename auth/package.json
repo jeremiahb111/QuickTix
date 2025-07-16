@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@hp_quicktix/common": "^1.0.8",
+    "@hp_quicktix/common": "^1.0.10",
     "bcryptjs": "^3.0.2",
     "console-stamp": "^3.1.2",
     "cookie-parser": "^1.4.7",
