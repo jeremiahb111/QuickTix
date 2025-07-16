@@ -1,9 +1,7 @@
 import { Router } from "express";
-import { catchAsync } from "../utils/catch-async";
 import { getCurrentUser, signin, signout, signup } from "../controllers/auth.controller";
-import { validate } from "../middlewares/validate";
 import { SigninSchema, SignupSchema } from "../types/auth.type";
-import { currentUser } from "../middlewares/current-user";
+import { currentUser, validate, catchAsync } from '@hp_quicktix/common'
 
 const router = Router();
 

@@ -2,8 +2,9 @@ import express from 'express'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 
+import { errorHandler } from '@hp_quicktix/common'
+
 import authRoute from './routes/auth.route'
-import { errorHandler } from './middlewares/error-handler'
 
 const app = express()
 

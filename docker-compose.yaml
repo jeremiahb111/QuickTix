@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  auth:
+    build: 
+      context: ./auth
+      dockerfile: Dockerfile.dev
+    container_name: tm_auth
+    environment:
+      - PORT=${AUTH_PORT}
+      - NODE_ENV=${NODE_ENV}
+      - MONGODB_URI=${MONGODB_URI}
+      - JWT_SECRET=${JWT_SECRET}
+    develop:
+      watch:
+        - path: ./auth/package.json
+          action: rebuild
+        - path: ./package-lock.json
+          action: rebuild
+        - path: ./auth
+          target: /app
+          action: sync
+  tickets:
+    build: 
+      context: ./tickets
+      dockerfile: Dockerfile.dev
+    container_name: tm_tickets
+    environment:
+      - PORT=${TICKET_PORT}
+      - NODE_ENV=${NODE_ENV}
+      - MONGODB_URI=${MONGODB_URI}
+      - JWT_SECRET=${JWT_SECRET}
+    develop:
+      watch:
+        - path: ./tickets/package.json
+          action: rebuild
+        - path: ./package-lock.json
+          action: rebuild
+        - path: ./tickets
+          target: /app
+          action: sync
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - auth

@@ -1,9 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { SigninType, SignupType } from "../types/auth.type";
 import User from "../models/user.model";
-import { BadRequestError } from "../utils/custom-error";
-import { SuccessResponse } from "../utils/success-response";
-import { JWT } from "../lib/jwt";
+import { BadRequestError, SuccessResponse, JWT } from '@hp_quicktix/common'
 
 export const signup = async (req: Request<{}, {}, SignupType>, res: Response, next: NextFunction) => {
   const isUserExist = await User.findOne({ email: req.body.email })
@@ -23,6 +21,8 @@ export const signin = async (req: Request<{}, {}, SigninType>, res: Response, ne
   const user = await User.findOne({ email: req.body.email })
 
   if (!user || !(await user.comparePassword(req.body.password))) throw new BadRequestError('Invalid credentials.')
+
+  JWT.generateToken({ id: user.id, email: user.email }, res)
 
   return new SuccessResponse('User signed in successfully.', 200, user).send(res)
 }

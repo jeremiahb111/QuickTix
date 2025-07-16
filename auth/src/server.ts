@@ -7,7 +7,7 @@ consoleStamp(console, {
   format: ":date(mm/dd/yyyy HH:MM:ss) :label"
 })
 
-const PORT = config.PORT
+const PORT = config.AUTH_PORT
 
 const start = async () => {
   await connectToDB()

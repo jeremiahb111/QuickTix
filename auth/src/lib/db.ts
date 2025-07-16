@@ -7,7 +7,7 @@ export const connectToDB = async () => {
       dbName: "tm_auth"
     })
 
-    console.log(`Connected to MongoDB: ${connect.connection.host}`)
+    console.log(`Auth Service is now connected to MongoDB: ${connect.connection.host}`)
   } catch (error) {
     console.error(`Error connecting to MongoDB: ${error}`)
     process.exit(1)
