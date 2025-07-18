@@ -1,6 +1,8 @@
 import { EachMessagePayload } from "kafkajs";
 import Ticket from "../../models/ticket.model";
 import { NotFoundError } from "@hp_quicktix/common";
+import Order from "../../models/order.model";
+import { kafkaClient } from "../../config/kafka";
 
 export const ticketConsumerEvent = async (payload: EachMessagePayload) => {
   const { topic, message } = payload
@@ -29,6 +31,22 @@ export const ticketConsumerEvent = async (payload: EachMessagePayload) => {
       })
 
       await ticket.save()
+      break
+    }
+
+    case 'order-expired': {
+      const id = JSON.parse(message.value!.toString())
+
+      const order = await Order.findById(id)
+
+      if (!order) throw new NotFoundError('Order not found.')
+
+      if (order.status === 'completed') return
+
+      order.status = 'cancelled'
+      await order.save()
+
+      await kafkaClient.produceMessage('order-cancelled', order.ticketId)
       break
     }
   }

@@ -80,6 +80,38 @@ services:
       - kafka
     networks:
       - kafka-networks
+
+  expiration:
+    build: 
+      context: ./expiration
+      dockerfile: Dockerfile.dev
+    container_name: tm_expiration
+    environment:
+      - REDIS_HOST=${REDIS_HOST}
+      - EXPIRATION_KAFKA_CLIENT_ID=${EXPIRATION_KAFKA_CLIENT_ID}
+      - EXPIRATION_KAFKA_GROUP_ID=${EXPIRATION_KAFKA_GROUP_ID}
+      - EXPIRATION_KAFKA_CONSUMER_TOPICS=${EXPIRATION_KAFKA_CONSUMER_TOPICS}
+    develop:
+      watch:
+        - path: ./expiration/package.json
+          action: rebuild
+        - path: ./package-lock.json
+          action: rebuild
+        - path: ./expiration
+          target: /app
+          action: sync
+    depends_on:
+      - kafka
+    networks:
+      - kafka-networks
+  
+  redis:
+    image: redis:8.2-rc1
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - kafka-networks
   kafka:
     image: bitnami/kafka:latest
     container_name: kafka

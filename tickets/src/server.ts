@@ -19,7 +19,6 @@ const topics = config.TOPICS?.split(',') || []
 
 
 const start = async () => {
-  console.log(topics)
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
   })

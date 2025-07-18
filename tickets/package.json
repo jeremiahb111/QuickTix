@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@hp_quicktix/common": "^1.0.15",
+    "@hp_quicktix/common": "^1.0.17",
     "console-stamp": "^3.1.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",

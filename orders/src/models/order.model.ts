@@ -27,7 +27,8 @@ const orderSchema = new Schema({
   },
   status: {
     type: String,
-    required: true,
+    enum: ['created', 'cancelled', 'completed'],
+    default: 'created',
   },
   expiresAt: {
     type: Date,

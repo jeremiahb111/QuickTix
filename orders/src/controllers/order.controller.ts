@@ -40,7 +40,14 @@ export const createOrder = async (req: Request<{}, {}, CreateOrderType>, res: Re
 
   await order.save()
 
-  await kafkaClient.produceMessage('order-created', order)
+  await kafkaClient.produceMessage('order-created', {
+    id: order.id,
+    version: order.version,
+    status: order.status,
+    userId: order.userId,
+    expiresAt: order.expiresAt.toISOString(),
+    ticketId: order.ticketId
+  })
 
   return new SuccessResponse('Order created successfully.', 201, order).send(res)
 }
