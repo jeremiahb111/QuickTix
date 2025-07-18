@@ -2,8 +2,8 @@ import consoleStamp from "console-stamp";
 import { app } from "./express-app";
 import { connectToDB } from "@hp_quicktix/common";
 import { config } from "./config";
-import { TicketCreatedConsumer } from "./events/consumer/ticket-created-consumer";
-import { kafka } from "./kafka";
+import { kafkaClient } from "./config/kafka";
+import { ticketConsumerEvent } from "./events/consumer/ticket";
 
 consoleStamp(console, {
   format: ":date(mm/dd/yyyy HH:MM:ss) :label"
@@ -15,12 +15,23 @@ const dbConfig = {
   dbName: config.DB_NAME as string
 }
 
+const topics = config.TOPICS?.split(',') || []
+
 const start = async () => {
-  await connectToDB(dbConfig)
-  await new TicketCreatedConsumer(kafka).consume()
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
+  })
+  await connectToDB(dbConfig)
+  await kafkaClient.initProducer()
+  await kafkaClient.initConsumer(topics, async (payload) => {
+    await ticketConsumerEvent(payload)
   })
 }
 
 start()
+
+process.on('SIGINT', async () => {
+  console.log('Shutting down...')
+  await kafkaClient.disconnect()
+  process.exit(0)
+})

@@ -1,18 +1,18 @@
 import { Schema, Model, Document, model } from "mongoose";
-import { TicketDoc } from "./ticket.model";
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 
 interface OrderAttrs {
   userId: string;
   status: string;
   expiresAt: Date;
-  ticket: TicketDoc
+  ticketId: Schema.Types.ObjectId
 }
 
 interface OrderDoc extends Document {
   userId: string;
   status: string;
   expiresAt: Date;
-  ticket: TicketDoc
+  ticketId: Schema.Types.ObjectId
   version: number;
 }
 
@@ -33,14 +33,23 @@ const orderSchema = new Schema({
     type: Date,
     required: true,
   },
-  ticket: {
+  ticketId: {
     type: Schema.Types.ObjectId,
     ref: 'Ticket',
     required: true
   }
+}, {
+  timestamps: true,
+  toJSON: {
+    transform(doc, ret: Record<string, any>) {
+      ret.id = ret._id
+      delete ret._id
+    }
+  }
 })
 
 orderSchema.set('versionKey', 'version')
+orderSchema.plugin(updateIfCurrentPlugin)
 
 orderSchema.statics.build = (attrs: OrderAttrs) => {
   return new Order(attrs)

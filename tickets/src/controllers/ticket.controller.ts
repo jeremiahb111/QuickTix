@@ -3,8 +3,7 @@ import Ticket from "../models/ticket.model";
 import { CreateTicketType, UpdateTicketType } from "../types/ticket.type";
 import { SuccessResponse, NotFoundError, BadRequestError } from '@hp_quicktix/common'
 import mongoose from "mongoose";
-import { kafka } from "../kafka";
-import { TicketCreatedProducer } from "../events/producer/ticket-created-producer";
+import { kafkaClient } from "../config/kafka";
 
 export const getTickets = async (req: Request, res: Response, next: NextFunction) => {
   const tickets = await Ticket.find()
@@ -17,7 +16,7 @@ export const createTicket = async (req: Request<{}, {}, CreateTicketType>, res: 
 
   await ticket.save()
 
-  await new TicketCreatedProducer(kafka).produce(ticket)
+  await kafkaClient.produceMessage('ticket-created', ticket)
 
   return new SuccessResponse('Ticket created successfully.', 201, ticket).send(res)
 }
@@ -48,6 +47,8 @@ export const updateTicket = async (req: Request<{ id: string }, {}, UpdateTicket
   if (!ticket) throw new NotFoundError('Ticket not found.')
 
   if (ticket.sellerId !== req.currentUser!.id) throw new BadRequestError('You are not allowed to update this ticket.')
+
+  if (ticket.orderId) throw new BadRequestError('You cannot update a reserved ticket.')
 
   ticket.set(req.body)
 
