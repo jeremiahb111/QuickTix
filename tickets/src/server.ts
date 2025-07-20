@@ -19,12 +19,17 @@ const topics = config.TOPICS?.split(',') || []
 
 
 const start = async () => {
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
-  })
-  await connectToDB(dbConfig)
-  await kafkaClient.initProducer()
-  await kafkaClient.initConsumer(topics, ticketEventConsumer)
+  try {
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`)
+    })
+    await connectToDB(dbConfig)
+    await kafkaClient.initProducer()
+    await kafkaClient.initConsumer(topics, ticketEventConsumer)
+  } catch (error) {
+    console.error(`Error starting server: ${error}`)
+    process.exit(1)
+  }
 }
 
 start()

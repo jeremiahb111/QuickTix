@@ -11,9 +11,14 @@ consoleStamp(console, {
 const topics = config.TOPICS?.split(',') || []
 
 const start = async () => {
-  console.log('Starting expiration service...')
-  await kafkaClient.initProducer()
-  await kafkaClient.initConsumer(topics, orderEventConsumer)
+  try {
+    console.log('Starting expiration service...')
+    await kafkaClient.initProducer()
+    await kafkaClient.initConsumer(topics, orderEventConsumer)
+  } catch (error) {
+    console.log(`Error starting expiration service: ${error}`)
+    process.exit(1)
+  }
 }
 
 start()
