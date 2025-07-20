@@ -24,9 +24,7 @@ const start = async () => {
   })
   await connectToDB(dbConfig)
   await kafkaClient.initProducer()
-  await kafkaClient.initConsumer(topics, async (payload) => {
-    await ticketEventConsumer(payload)
-  })
+  await kafkaClient.initConsumer(topics, ticketEventConsumer)
 }
 
 start()

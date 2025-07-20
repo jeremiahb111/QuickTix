@@ -19,7 +19,7 @@ export const ticketEventConsumer = async (payload: EachMessagePayload) => {
 
       await kafkaClient.produceMessage('ticket-updated', ticket)
 
-      console.log('Ticket created successfully.')
+      console.log('Order created successfully.')
 
       break
     }
