@@ -6,7 +6,7 @@ A microservices-based ticketing app built with Node.js, TypeScript, and Docker.
 
 This app allows users to purchase and manage tickets for events. The app consists of multiple services, each responsible for a specific aspect of the ticketing process.
 
-Services
+**Services:**
 
 **Payments Service**
 
