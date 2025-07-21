@@ -5,10 +5,11 @@ import { BadRequestError, NotFoundError, SuccessResponse, UnauthorizedError } fr
 import Order from "../models/order.model";
 import { kafkaClient } from "../config/kafka";
 import Payment from "../models/payment.model";
+import { CheckoutSessionType, CheckoutSuccessType } from "../types/payment.type";
 
 const stripe = new Stripe(config.STRIPE_SECRET_KEY!)
 
-export const createCheckoutSession = async (req: Request, res: Response, next: NextFunction) => {
+export const createCheckoutSession = async (req: Request<{}, {}, CheckoutSessionType>, res: Response, next: NextFunction) => {
   const { orderId, ticketInfo } = req.body
 
   if (!orderId) throw new BadRequestError('Order id is required.')
@@ -51,7 +52,7 @@ export const createCheckoutSession = async (req: Request, res: Response, next: N
   }).send(res)
 }
 
-export const checkoutSuccess = async (req: Request, res: Response, next: NextFunction) => {
+export const checkoutSuccess = async (req: Request<{}, {}, CheckoutSuccessType>, res: Response, next: NextFunction) => {
   const { sessionId } = req.body
 
   const session = await stripe.checkout.sessions.retrieve(sessionId)
