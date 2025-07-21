@@ -14,7 +14,10 @@ export const createCheckoutSession = async (req: Request<{}, {}, CheckoutSession
 
   if (!orderId) throw new BadRequestError('Order id is required.')
 
-  const order = await Order.findById(orderId)
+  const order = await Order.findOne({
+    _id: orderId,
+    status: 'created'
+  })
 
   if (!order) throw new NotFoundError('Order not found')
 
