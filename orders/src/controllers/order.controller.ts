@@ -15,18 +15,17 @@ export const getOrders = async (req: Request, res: Response, next: NextFunction)
 
 export const createOrder = async (req: Request<{}, {}, CreateOrderType>, res: Response, next: NextFunction) => {
   const ticketId = req.body.ticketId
-
-  const isValidId = mongoose.Types.ObjectId.isValid(ticketId)
-
-  if (!isValidId) throw new NotFoundError('Cannot create an order for non-existent ticket.')
+  const user = req.currentUser
 
   const ticket = await Ticket.findById(ticketId)
 
-  if (!ticket) throw new NotFoundError('Ticket not found.')
+  if (!ticket) throw new NotFoundError('Cannot create an order for non-existent ticket.')
+
+  if (ticket.sellerId === user!.id) throw new BadRequestError('You cannot buy your own ticket.')
 
   const isReserved = await ticket.isReserved()
 
-  if (isReserved) throw new BadRequestError('Ticket is already reserved.')
+  if (isReserved) throw new BadRequestError('Ticket is already bought or reserved.')
 
   const expiration = new Date()
   expiration.setSeconds(expiration.getSeconds() + (+config.WINDOW_TIME!))

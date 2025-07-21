@@ -12,7 +12,8 @@ consoleStamp(console, {
 const PORT = config.PORT || 3000
 const dbConfig = {
   serviceName: config.SERVICE_NAME as string,
-  dbName: config.DB_NAME as string
+  dbName: config.DB_NAME as string,
+  db_uri: config.MONGODB_URI as string
 }
 
 const topics = config.TOPICS?.split(',') || []

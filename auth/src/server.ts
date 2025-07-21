@@ -10,7 +10,8 @@ consoleStamp(console, {
 const PORT = config.PORT
 const dbConfig = {
   serviceName: config.SERVICE_NAME as string,
-  dbName: config.DB_NAME as string
+  dbName: config.DB_NAME as string,
+  db_uri: config.MONGODB_URI as string
 }
 
 const start = async () => {

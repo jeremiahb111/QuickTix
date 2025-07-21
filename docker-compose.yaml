@@ -104,6 +104,33 @@ services:
       - kafka
     networks:
       - kafka-networks
+  payments:
+    build: 
+      context: ./payments
+      dockerfile: Dockerfile.dev
+    container_name: tm_payments
+    environment:
+      - PAYMENTS_PORT=${PAYMENTS_PORT}
+      - NODE_ENV=${NODE_ENV}
+      - MONGODB_URI=${MONGODB_URI}
+      - PAYMENTS_DB_NAME=${PAYMENTS_DB_NAME}
+      - PAYMENTS_SERVICE_NAME=${PAYMENTS_SERVICE_NAME}
+      - PAYMENTS_KAFKA_CLIENT_ID=${PAYMENTS_KAFKA_CLIENT_ID}
+      - PAYMENTS_KAFKA_GROUP_ID=${PAYMENTS_KAFKA_GROUP_ID}
+      - PAYMENTS_KAFKA_CONSUMER_TOPICS=${PAYMENTS_KAFKA_CONSUMER_TOPICS}
+    develop:
+      watch:
+        - path: ./payments/package.json
+          action: rebuild
+        - path: ./package-lock.json
+          action: rebuild
+        - path: ./payments
+          target: /app
+          action: sync
+    depends_on:
+      - kafka
+    networks:
+      - kafka-networks
   
   redis:
     image: redis:8.2-rc1

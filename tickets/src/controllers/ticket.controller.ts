@@ -16,6 +16,8 @@ export const createTicket = async (req: Request<{}, {}, CreateTicketType>, res: 
 
   await ticket.save()
 
+  console.log(`Ticket created with id: ${ticket.id}`)
+
   await kafkaClient.produceMessage('ticket-created', ticket)
 
   return new SuccessResponse('Ticket created successfully.', 201, ticket).send(res)
