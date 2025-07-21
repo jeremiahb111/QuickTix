@@ -1,4 +1,4 @@
-**Ticketing App**
+**Ticketing App** 
 A microservices-based ticketing app built with Node.js, TypeScript, and Docker.
 
 Overview
