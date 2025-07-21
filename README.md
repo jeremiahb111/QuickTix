@@ -1,30 +1,30 @@
-Ticketing App
+**Ticketing App**
 A microservices-based ticketing app built with Node.js, TypeScript, and Docker.
 
 Overview
 This app allows users to purchase and manage tickets for events. The app consists of multiple services, each responsible for a specific aspect of the ticketing process.
 
 Services
-1. Payments Service
+**Payments Service**
 *Handles payment processing for ticket purchases
 *Integrates with payment gateways (Stripe)
 *Responsible for generating payment receipts and updating order status
 
-2. Tickets Service
+**Ticket Service**
 *Manages ticket inventory and availability
 *Handles ticket purchases and reservations
 *Provides ticket details and status updates
 
-3. Orders Service
+**Order Service**
 *Manages order creation and processing
 *Integrates with Payments Service for payment processing
 *Responsible for generating order confirmations and updating order status
 
-4. Auth Service
+**Auth Service**
 *Handles user authentication and authorization
 *Provides user profile management and access control
 
-5. Expiration Service
+**Expiration Service**
 *Handles ticket expiration and notification logic
 *Responsible for sending reminders and updates to users
 
