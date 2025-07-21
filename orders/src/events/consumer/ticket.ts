@@ -10,8 +10,11 @@ export const ticketConsumerEvent = async (payload: EachMessagePayload) => {
   switch (topic) {
     case 'ticket-created': {
       const ticket = JSON.parse(message.value!.toString())
+
       await Ticket.build(ticket).save()
+
       console.log('Ticket created successfully.')
+
       break
     }
 
@@ -31,22 +34,6 @@ export const ticketConsumerEvent = async (payload: EachMessagePayload) => {
       })
 
       await ticket.save()
-      break
-    }
-
-    case 'order-expired': {
-      const id = JSON.parse(message.value!.toString())
-
-      const order = await Order.findById(id)
-
-      if (!order) throw new NotFoundError('Order not found.')
-
-      if (order.status === 'completed') return
-
-      order.status = 'cancelled'
-      await order.save()
-
-      await kafkaClient.produceMessage('order-cancelled', order.ticketId)
       break
     }
   }

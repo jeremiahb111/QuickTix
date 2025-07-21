@@ -13,7 +13,7 @@ expirationQueue.process(async (job) => {
 
   await kafkaClient.produceMessage('order-expired', orderId)
 
-  console.log(`Order ${orderId} cancelled successfully. `)
+  console.log(`Transaction with order id: ${orderId} has expired.`)
 });
 
 export { expirationQueue };

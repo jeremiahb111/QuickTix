@@ -4,6 +4,7 @@ import { connectToDB } from "@hp_quicktix/common";
 import { config } from "./config";
 import { kafkaClient } from "./config/kafka";
 import { ticketConsumerEvent } from "./events/consumer/ticket";
+import { orderEventConsumer } from "./events/consumer/order";
 
 consoleStamp(console, {
   format: ":date(mm/dd/yyyy HH:MM:ss) :label"
@@ -20,12 +21,25 @@ const topics = config.TOPICS?.split(',') || []
 
 const start = async () => {
   try {
+    await Promise.all([
+      connectToDB(dbConfig),
+      kafkaClient.initProducer(),
+      kafkaClient.initConsumer(topics, async (payload) => {
+        const { topic } = payload
+
+        if (topic.startsWith('ticket')) {
+          await ticketConsumerEvent(payload)
+        } else if (topic.startsWith('order')) {
+          await orderEventConsumer(payload)
+        } else {
+          console.warn(`Unknown topic: ${topic}`)
+        }
+      }),
+    ])
+
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT}`)
     })
-    await connectToDB(dbConfig)
-    await kafkaClient.initProducer()
-    await kafkaClient.initConsumer(topics, ticketConsumerEvent)
   } catch (error) {
     console.error(`Error starting server: ${error}`)
     process.exit(1)

@@ -9,7 +9,7 @@ export const ticketEventConsumer = async (payload: EachMessagePayload) => {
     case 'order-created': {
       const orderInfo = JSON.parse(message.value!.toString())
 
-      const ticket = await Ticket.findById(orderInfo.ticketId)
+      const ticket = await Ticket.findById(orderInfo.ticket.id)
 
       if (!ticket) throw new NotFoundError('Ticket not found.')
 

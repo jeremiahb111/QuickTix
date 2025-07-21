@@ -28,7 +28,7 @@ export const createOrder = async (req: Request<{}, {}, CreateOrderType>, res: Re
   if (isReserved) throw new BadRequestError('Ticket is already bought or reserved.')
 
   const expiration = new Date()
-  expiration.setSeconds(expiration.getSeconds() + (+config.WINDOW_TIME!))
+  expiration.setSeconds(expiration.getSeconds() + (+config.WINDOW_TIME! * 5))
 
   const order = Order.build({
     userId: req.currentUser!.id,
@@ -45,7 +45,11 @@ export const createOrder = async (req: Request<{}, {}, CreateOrderType>, res: Re
     status: order.status,
     userId: order.userId,
     expiresAt: order.expiresAt.toISOString(),
-    ticketId: order.ticketId
+    ticket: {
+      id: ticket.id,
+      price: ticket.price,
+      title: ticket.title
+    }
   })
 
   return new SuccessResponse('Order created successfully.', 201, order).send(res)
