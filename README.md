@@ -1,6 +1,6 @@
 ## QuickTix
 
-A microservices-based ticketing app built with Node.js, TypeScript, and Docker, utilizing Apache Kafka for event-driven communication between services.
+A ticketing application built using a microservices architecture with Node.js, TypeScript, and Docker. It leverages Apache Kafka for event-driven service communication and uses the Bull library for managing background job queues.
 
 ### **Overview**
 
