@@ -1,4 +1,4 @@
-## Ticketing App
+## QuickTix
 
 A microservices-based ticketing app built with Node.js, TypeScript, and Docker.
 
