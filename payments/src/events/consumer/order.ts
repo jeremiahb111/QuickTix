@@ -1,5 +1,6 @@
 import { EachMessagePayload } from "kafkajs";
 import Order from "../../models/order.model";
+import { NotFoundError } from "@hp_quicktix/common";
 
 export const orderEventConsumer = async (payload: EachMessagePayload) => {
   const { topic, message } = payload
@@ -24,7 +25,7 @@ export const orderEventConsumer = async (payload: EachMessagePayload) => {
 
       const order = await Order.findById(orderId)
 
-      if (!order) throw new Error('Order not found.')
+      if (!order) throw new NotFoundError('Order not found.')
 
       if (order.status === 'completed') return
 
