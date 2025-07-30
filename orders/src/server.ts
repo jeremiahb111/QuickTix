@@ -5,6 +5,7 @@ import { config } from "./config";
 import { kafkaClient } from "./config/kafka";
 import { ticketConsumerEvent } from "./events/consumer/ticket";
 import { orderEventConsumer } from "./events/consumer/order";
+import { EachMessagePayload } from "kafkajs";
 
 consoleStamp(console, {
   format: ":date(mm/dd/yyyy HH:MM:ss) :label"
@@ -19,22 +20,28 @@ const dbConfig = {
 
 const topics = config.TOPICS?.split(',') || []
 
+const handleKafkaMessage = async (payload: EachMessagePayload) => {
+  const { topic } = payload
+
+  try {
+    if (topic.startsWith('ticket')) {
+      await ticketConsumerEvent(payload)
+    } else if (topic.startsWith('order')) {
+      await orderEventConsumer(payload)
+    } else {
+      console.warn(`Unknown topic: ${topic}`)
+    }
+  } catch (error) {
+    console.error(`Error processing Kafka message: ${error}`)
+  }
+}
+
 const start = async () => {
   try {
     await Promise.all([
       connectToDB(dbConfig),
       kafkaClient.initProducer(),
-      kafkaClient.initConsumer(topics, async (payload) => {
-        const { topic } = payload
-
-        if (topic.startsWith('ticket')) {
-          await ticketConsumerEvent(payload)
-        } else if (topic.startsWith('order')) {
-          await orderEventConsumer(payload)
-        } else {
-          console.warn(`Unknown topic: ${topic}`)
-        }
-      }),
+      kafkaClient.initConsumer(topics, handleKafkaMessage),
     ])
 
     app.listen(PORT, () => {
